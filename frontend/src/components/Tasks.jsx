@@ -26,7 +26,15 @@ const Tasks = () => {
     const config = { url: `/tasks/${id}`, method: "delete", headers: { Authorization: authState.token } };
     fetchData(config).then(() => fetchTasks());
   }
-
+  const handleToggleComplete = (id, completed) => {
+    const config = {
+      url: `/tasks/${id}`,
+      method: "put", // or "patch" depending on your backend
+      headers: { Authorization: authState.token },
+      data: { completed: !completed }
+    };
+    fetchData(config).then(() => fetchTasks());
+  }
 
   return (
     <>
@@ -48,7 +56,12 @@ const Tasks = () => {
               tasks.map((task, index) => (
                 <div key={task._id} className='bg-white my-4 p-4 text-gray-600 rounded-md shadow-md'>
                   <div className='flex'>
-
+                  <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={task.completed}
+                    onChange={() => handleToggleComplete(task._id, task.completed)}
+                  />
                     <span className='font-medium'>Task #{index + 1}</span>
 
                     <Tooltip text={"Edit this task"} position={"top"}>

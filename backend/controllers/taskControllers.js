@@ -48,9 +48,10 @@ exports.postTask = async (req, res) => {
 
 exports.putTask = async (req, res) => {
   try {
-    const { description } = req.body;
-    if (!description) {
-      return res.status(400).json({ status: false, msg: "Description of task not found" });
+    const { description, completed } = req.body;
+
+    if (!description && typeof completed !== "boolean") {
+      return res.status(400).json({ status: false, msg: "No valid fields to update" });
     }
 
     if (!validateObjectId(req.params.taskId)) {
@@ -66,14 +67,19 @@ exports.putTask = async (req, res) => {
       return res.status(403).json({ status: false, msg: "You can't update task of another user" });
     }
 
-    task = await Task.findByIdAndUpdate(req.params.taskId, { description }, { new: true });
-    res.status(200).json({ task, status: true, msg: "Task updated successfully.." });
-  }
-  catch (err) {
+    // Build update object based on what is sent
+    const updateData = {};
+    if (description) updateData.description = description;
+    if (typeof completed === "boolean") updateData.completed = completed;
+
+    task = await Task.findByIdAndUpdate(req.params.taskId, updateData, { new: true });
+
+    res.status(200).json({ task, status: true, msg: "Task updated successfully." });
+  } catch (err) {
     console.error(err);
     return res.status(500).json({ status: false, msg: "Internal Server Error" });
   }
-}
+};
 
 
 exports.deleteTask = async (req, res) => {
