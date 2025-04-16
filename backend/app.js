@@ -12,7 +12,7 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: "https://task-manager-seven-rosy.vercel.app/", // your Vercel domain
+  origin: "*", // your Vercel domain
   credentials: true,
 }));
 
