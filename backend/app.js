@@ -12,9 +12,10 @@ app.use(express.json());
 
 
 app.use(cors({
-  origin: "*", // your Vercel domain
+  origin: "https://task-manager-seven-rosy.vercel.app", // your Vercel domain
   credentials: true,
 }));
+// app.options('*', cors())
 
 const mongoUrl = process.env.MONGODB_URL;
 mongoose.connect(mongoUrl, err => {
